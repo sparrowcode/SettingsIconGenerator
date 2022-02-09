@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.author = { 'Ivan Vorobei' => 'hello@ivanvorobei.by' }
   
   s.swift_version = '5.1'
-  s.ios.deployment_target = '12.0'
+  s.ios.deployment_target = '13.0'
 
   s.source_files  = 'Sources/SPSettingsIcons/**/*.swift'
 
