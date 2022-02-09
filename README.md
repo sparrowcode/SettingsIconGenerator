@@ -1,4 +1,4 @@
-# SPIconsSettings
+# SPSettingsIcons
 
 Generate settings icons by Apple's SF Symbols.
 
