@@ -21,30 +21,17 @@
 
 import SwiftUI
 
-extension Image {
+public struct SettingsIcon: View {
 
-    /// Apply settings style for Image
-    ///
-    /// Example:
-    ///
-    ///     Image(systemName: "wifi")
-    ///         .settingStyle(color: .blue)
-    ///
-    public func settingStyle(color: Color) -> some View {
-        self
-            .modifier(SettingsImageModifier())
-            .foregroundColor(color)
-    }
+    let systemName: String
+    let backgroundColor: Color
 
-}
-
-struct SettingsImageModifier: ViewModifier {
-
-    func body(content: Content) -> some View {
+    public var body: some View {
         ZStack {
             Image(systemName: "app.fill")
                 .font(.system(size: 32))
-            content
+                .foregroundColor(backgroundColor)
+            Image(systemName: systemName)
                 .font(.system(size: 16))
                 .foregroundColor(.white)
         }
