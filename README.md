@@ -18,6 +18,8 @@ let image = UIImage.generateSettingsIcon("bell.fill", backgroundColor: .systemBl
     <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/faceid.png" width="38">
 </p>
 
+For safe using SFSymbols check [SPSafeSymbols] library.
+
 ## Installation
 
 Ready for use on iOS 13+.
