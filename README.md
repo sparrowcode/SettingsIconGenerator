@@ -18,7 +18,7 @@ let image = UIImage.generateSettingsIcon("bell.fill", backgroundColor: .systemBl
     <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/faceid.png" width="38">
 </p>
 
-For safe using SFSymbols check [SPSafeSymbols](https://github.com/sparrowcode/SPSafeSymbols) library.
+For safe using SFSymbols see [SPSafeSymbols](https://github.com/sparrowcode/SPSafeSymbols) library.
 
 ## Installation
 
