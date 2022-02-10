@@ -19,39 +19,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if canImport(UIKit)
+import UIKit
+
+extension UIImage {
+    
+    public static func generateSettingsIcon(_ systemName: String, backgroundColor: UIColor) -> UIImage? {
+        return generate(systemName: systemName, backgroundColor: backgroundColor)
+    }
+}
+#endif
+
 #if canImport(SwiftUI)
 import SwiftUI
 
 extension Image {
     
-    /// Apply settings style for Image
-    ///
-    /// Example:
-    ///
-    ///     Image(systemName: "wifi")
-    ///         .settingStyle(color: .blue)
-    ///
-    public func settingStyle(color: Color) -> some View {
-        self
-            .modifier(SettingsImageModifier())
-            .foregroundColor(color)
-    }
-}
-
-struct SettingsImageModifier: ViewModifier {
-    
-    private static var iconFontSize: CGFloat = 16
-    private static var backgroundFontSize: CGFloat = 32
-    private static var backgroundSystemName: String = "app.fill"
-    
-    func body(content: Content) -> some View {
-        ZStack {
-            Image(systemName: SettingsImageModifier.backgroundSystemName)
-                .font(.system(size: SettingsImageModifier.backgroundFontSize))
-            content
-                .font(.system(size: SettingsImageModifier.iconFontSize))
-                .foregroundColor(.white)
-        }
+    public static func generateSettingsIcon(_ systemName: String, backgroundColor: UIColor) -> UIImage? {
+        return generate(systemName: systemName, backgroundColor: backgroundColor)
     }
 }
 #endif

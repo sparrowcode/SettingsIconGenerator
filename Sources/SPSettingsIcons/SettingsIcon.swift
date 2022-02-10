@@ -19,6 +19,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if canImport(SwiftUI)
 import SwiftUI
 
 public struct SettingsIcon: View {
@@ -28,13 +29,13 @@ public struct SettingsIcon: View {
 
     public var body: some View {
         ZStack {
-            Image(systemName: "app.fill")
-                .font(.system(size: 32))
+            Image(systemName: backgroundSystemName)
+                .font(.system(size: backgroundFontSize))
                 .foregroundColor(backgroundColor)
             Image(systemName: systemName)
-                .font(.system(size: 16))
+                .font(.system(size: iconFontSize))
                 .foregroundColor(.white)
         }
     }
-
 }
+#endif

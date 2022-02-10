@@ -64,8 +64,12 @@ let image = UIImage.generateSettingsIcon("bell.fill", backgroundColor: .systemBl
 ### SwiftUI
 
 ```swift
-
+SettingsIcon("bell.fill", backgroundColor: .systemBlue)
 ```
+
+or if need generate image:
+
+Image.generateSettingsIcon("bell.fill", backgroundColor: .systemBlue)
 
 ### AppKit
 
