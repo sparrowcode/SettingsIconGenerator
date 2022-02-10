@@ -69,7 +69,9 @@ SettingsIcon("bell.fill", backgroundColor: .systemBlue)
 
 or if need generate image:
 
+```swift
 Image.generateSettingsIcon("bell.fill", backgroundColor: .systemBlue)
+```
 
 ### AppKit
 
