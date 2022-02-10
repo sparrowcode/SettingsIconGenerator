@@ -2,10 +2,6 @@
 
 Generate settings icons by Apple's SF Symbols.
 
-```swift
-let image = UIImage.generateSettingsIcon("bell.fill", backgroundColor: .systemBlue)
-```
-
 <p float="left">
     <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/notifications.png" width="38">
     <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/location.png" width="38">
@@ -19,6 +15,15 @@ let image = UIImage.generateSettingsIcon("bell.fill", backgroundColor: .systemBl
 </p>
 
 For safe using SFSymbols see [SPSafeSymbols](https://github.com/sparrowcode/SPSafeSymbols) library.
+
+- [Installation](#installation)
+    - [Swift Package Manager](#swift-package-manager)
+    - [CocoaPods](#cocoapods)
+    - [Manually](#manually)
+- [Usage](#usage)
+    - [UIKit](#uikit)
+    - [SwiftUI](#swiftui)
+    - [AppKit](#appkit)
 
 ## Installation
 
@@ -47,3 +52,23 @@ pod 'SPSettingsIcons'
 ### Manually
 
 If you prefer not to use any of dependency managers, you can integrate manually. Put `Sources/SPSettingsIcons` folder in your Xcode project. Make sure to enable `Copy items if needed` and `Create groups`.
+
+## Usage
+
+### UIKit
+
+```swift
+let image = UIImage.generateSettingsIcon("bell.fill", backgroundColor: .systemBlue)
+```
+
+### SwiftUI
+
+```swift
+
+```
+
+### AppKit
+
+```swift
+
+```

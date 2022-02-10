@@ -19,6 +19,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if canImport(UIKit)
 import UIKit
 
 class SPSettingsIconImage {
@@ -55,10 +56,4 @@ class SPSettingsIconImage {
         return settingsImage
     }
 }
-
-extension UIImage {
-    
-    public static func generateSettingsIcon(_ systemName: String, backgroundColor: UIColor) -> UIImage? {
-        return SPSettingsIconImage.generate(systemName: systemName, backgroundColor: backgroundColor)
-    }
-}
+#endif

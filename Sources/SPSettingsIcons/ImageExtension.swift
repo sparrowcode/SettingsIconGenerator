@@ -19,10 +19,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if canImport(SwiftUI)
 import SwiftUI
 
 extension Image {
-
+    
     /// Apply settings style for Image
     ///
     /// Example:
@@ -35,19 +36,22 @@ extension Image {
             .modifier(SettingsImageModifier())
             .foregroundColor(color)
     }
-
 }
 
 struct SettingsImageModifier: ViewModifier {
-
+    
+    private static var iconFontSize: CGFloat = 16
+    private static var backgroundFontSize: CGFloat = 32
+    private static var backgroundSystemName: String = "app.fill"
+    
     func body(content: Content) -> some View {
         ZStack {
-            Image(systemName: "app.fill")
-                .font(.system(size: 32))
+            Image(systemName: SettingsImageModifier.backgroundSystemName)
+                .font(.system(size: SettingsImageModifier.backgroundFontSize))
             content
-                .font(.system(size: 16))
+                .font(.system(size: SettingsImageModifier.iconFontSize))
                 .foregroundColor(.white)
         }
     }
-
 }
+#endif
