@@ -6,7 +6,9 @@ let package = Package(
     name: "SPSettingsIcons",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v13)
+        .iOS(.v13),
+        .tvOS(.v13),
+        .macOS(.v11)
     ],
     products: [
         .library(

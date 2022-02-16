@@ -19,23 +19,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if canImport(SwiftUI)
-import SwiftUI
+import Foundation
 
-public struct SettingsIcon: View {
-
-    let systemName: String
-    let backgroundColor: Color
-
-    public var body: some View {
-        ZStack {
-            Image(systemName: backgroundSystemName)
-                .font(.system(size: backgroundFontSize))
-                .foregroundColor(backgroundColor)
-            Image(systemName: systemName)
-                .font(.system(size: iconFontSize))
-                .foregroundColor(.white)
-        }
-    }
-}
-#endif
+var iconFontSize: Int { 16 }
+var backgroundFontSize: Int { 32 }
+var backgroundSystemName: String { "app.fill" }
