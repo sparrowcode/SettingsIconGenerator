@@ -3,15 +3,15 @@
 Generate settings icons by Apple's SF Symbols.
 
 <p float="left">
-    <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/notifications.png" width="38">
-    <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/location.png" width="38">
-    <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/microphone.png" width="38">
-    <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/motion.png" width="38">
-    <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/music.png" width="38">
-    <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/speech.png" width="38">
-    <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/bluetooth.png" width="38">
-    <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/tracking.png" width="38">
-    <img src="https://cdn.ivanvorobei.by/github/sppermissions/permissions/faceid.png" width="38">
+    <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/notifications.png" width="38">
+    <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/location.png" width="38">
+    <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/microphone.png" width="38">
+    <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/motion.png" width="38">
+    <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/music.png" width="38">
+    <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/speech.png" width="38">
+    <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/bluetooth.png" width="38">
+    <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/tracking.png" width="38">
+    <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/faceid.png" width="38">
 </p>
 
 For safe using SFSymbols see [SPSafeSymbols](https://github.com/sparrowcode/SPSafeSymbols) library.
