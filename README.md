@@ -72,9 +72,3 @@ or if need generate image:
 ```swift
 Image.generateSettingsIcon("bell.fill", backgroundColor: .systemBlue)
 ```
-
-### AppKit
-
-```swift
-
-```
