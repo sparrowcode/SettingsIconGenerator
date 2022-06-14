@@ -31,7 +31,7 @@ Ready for use on iOS 13+.
 
 ### Swift Package Manager
 
-The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift` compiler. It’s integrated with the Swift build system to automate the process of downloading, compiling, and linking dependencies.
+The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift`  compiler. It’s integrated with the Swift build system to automate the process of downloading, compiling, and linking dependencies.
 
 Once you have your Swift package set up, adding as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
 
@@ -51,7 +51,7 @@ pod 'SPSettingsIcons'
 
 ### Manually
 
-If you prefer not to use any of dependency managers, you can integrate manually. Put `Sources/SPSettingsIcons` folder in your Xcode project. Make sure to enable `Copy items if needed` and `Create groups`.
+If you prefer not to use any of the dependency managers, you can integrate manually. Put `Sources/SPSettingsIcons` folder in your Xcode project. Make sure to enable `Copy items if needed` and `Create groups`.
 
 ## Usage
 
