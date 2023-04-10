@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "SPSettingsIcons",
+    name: "SettingsIconGenerator",
     defaultLocalization: "en",
     platforms: [
         .iOS(.v13),
@@ -12,14 +12,14 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "SPSettingsIcons",
-            targets: ["SPSettingsIcons"]
+            name: "SettingsIconGenerator",
+            targets: ["SettingsIconGenerator"]
         )
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "SPSettingsIcons"
+            name: "SettingsIconGenerator"
         )
     ]
 )
