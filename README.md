@@ -1,5 +1,7 @@
 # SettingsIconGenerator
 
+Generate settings icons by Apple's SF Symbols.
+
 <p float="left">
     <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/notifications.png" width="38">
     <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/location.png" width="38">
@@ -11,8 +13,6 @@
     <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/tracking.png" width="38">
     <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/faceid.png" width="38">
 </p>
-
-Generate settings icons by Apple's SF Symbols.
 
 ### Community
 
