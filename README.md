@@ -1,7 +1,5 @@
 # SettingsIconGenerator
 
-Generate settings icons by Apple's SF Symbols.
-
 <p float="left">
     <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/notifications.png" width="38">
     <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/location.png" width="38">
@@ -14,7 +12,7 @@ Generate settings icons by Apple's SF Symbols.
     <img src="https://cdn.ivanvorobei.io/github/sppermissions/permissions/faceid.png" width="38">
 </p>
 
-For safe using SFSymbols see [SPSafeSymbols](https://github.com/sparrowcode/SPSafeSymbols) library.
+Generate settings icons by Apple's SF Symbols.
 
 <p float="left">
     <a href="https://twitter.com/sparrowcode_en">
