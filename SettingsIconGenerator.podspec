@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name = 'SettingsIconGenerator'
-  s.version = '1.0.1'
+  s.version = '1.0.2'
   s.summary = 'Generator of settings icon by SF Symbols.'
   s.homepage = 'https://github.com/sparrowcode/SettingsIconGenerator'
   s.source = { :git => 'https://github.com/sparrowcode/SettingsIconGenerator.git', :tag => s.version }
