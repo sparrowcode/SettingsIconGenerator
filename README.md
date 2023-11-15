@@ -108,6 +108,7 @@ Image.generateSettingsIcon("bell.fill", backgroundColor: .systemBlue)
     <a href="https://apps.apple.com/app/id537070378"><img src="https://cdn.sparrowcode.io/github/apps-using/id537070378.png?version=2" height="65"></a>
     <a href="https://apps.apple.com/app/id1570676244"><img src="https://cdn.sparrowcode.io/github/apps-using/id1570676244.png?version=2" height="65"></a>
     <a href="https://apps.apple.com/app/id1617055933"><img src="https://cdn.sparrowcode.io/github/apps-using/id1617055933.png?version=2" height="65"></a>
+    <a href="https://apps.apple.com/app/id6451087813"><img src="https://i.ibb.co/ngkgPPy/v2-1.png" height="65"></a>
 </p>
 
 If you use a `SettingsIconGenerator`, add your application via Pull Request.
