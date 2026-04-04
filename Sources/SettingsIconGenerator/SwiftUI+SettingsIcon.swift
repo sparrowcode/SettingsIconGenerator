@@ -1,21 +1,34 @@
-#if canImport(SwiftUI)
 import SwiftUI
 
-@available(iOS 13, tvOS 13, macOS 11, *)
+/* Иконка в стиле Apple Settings для SwiftUI.
+ Цветной скруглённый квадрат (app.fill) с белым SF Symbol по центру. */
 public struct SettingsIcon: View {
 
     let systemName: String
     let backgroundColor: Color
+    let size: SettingsIconSize
+
+    public init(
+        systemName: String,
+        backgroundColor: Color,
+        size: SettingsIconSize = .standard
+    ) {
+        self.systemName = systemName
+        self.backgroundColor = backgroundColor
+        self.size = size
+    }
 
     public var body: some View {
         ZStack {
-            Image(systemName: backgroundSystemName)
-                .font(.system(size: CGFloat(backgroundFontSize)))
-                .foregroundColor(backgroundColor)
+            Image(systemName: backgroundSymbolName)
+                .resizable()
+                .scaledToFit()
+                .foregroundStyle(backgroundColor)
+                .frame(width: size.points, height: size.points)
             Image(systemName: systemName)
-                .font(.system(size: CGFloat(iconFontSize)))
-                .foregroundColor(.white)
+                .font(.system(size: size.iconFontSize))
+                .foregroundStyle(.white)
         }
+        .frame(width: size.points, height: size.points)
     }
 }
-#endif

@@ -2,34 +2,49 @@
 import UIKit
 
 extension UIImage {
-    
-    @available(iOS 13, tvOS 13, *)
-    public static func generateSettingsIcon(_ systemName: String, backgroundColor: UIColor) -> UIImage? {
-        let iconConfiguration = UIImage.SymbolConfiguration(pointSize: CGFloat(iconFontSize), weight: .regular)
-        let iconImage = UIImage(systemName: systemName, withConfiguration: iconConfiguration)?.withTintColor(.white, renderingMode: .alwaysOriginal)
-        
-        let backgroundConfiguration = UIImage.SymbolConfiguration(pointSize: CGFloat(backgroundFontSize), weight: .regular)
-        let backgroundImage = UIImage(systemName: backgroundSystemName, withConfiguration: backgroundConfiguration)!.withTintColor(backgroundColor, renderingMode: .alwaysOriginal)
-        
-        let size = backgroundImage.size
-        UIGraphicsBeginImageContextWithOptions(size, false, .zero)
-        
-        backgroundImage.draw(in: CGRect(origin: .zero, size: size))
-        
-        if let iconImage = iconImage {
-            let iconSize = iconImage.size
-            iconImage.draw(in: CGRect(
-                origin: .init(
-                    x: (size.width - iconSize.width) / 2,
-                    y: (size.height - iconSize.height) / 2
-                ),
-                size: iconSize
-            ))
+
+    /* Генерирует иконку в стиле Apple Settings: цветной скруглённый квадрат (app.fill) с белым SF Symbol по центру.
+     Рендерит app.fill в натуральном размере SF Symbol — без масштабирования, без канвас-ограничений.
+     Корректный layout в UIListContentConfiguration обеспечивается через reservedLayoutSize и maximumSize
+     на стороне потребителя, а не через размер изображения. */
+    public static func generateSettingsIcon(
+        _ systemName: String,
+        backgroundColor: UIColor,
+        size: SettingsIconSize = .standard
+    ) -> UIImage? {
+        let backgroundPointSize = size.points
+        let iconPointSize = size.iconFontSize
+
+        let backgroundConfig = UIImage.SymbolConfiguration(pointSize: backgroundPointSize, weight: .regular)
+        guard let background = UIImage(systemName: backgroundSymbolName, withConfiguration: backgroundConfig)?
+            .withTintColor(backgroundColor, renderingMode: .alwaysOriginal) else { return nil }
+
+        let iconConfig = UIImage.SymbolConfiguration(pointSize: iconPointSize, weight: .regular)
+        let icon = UIImage(systemName: systemName, withConfiguration: iconConfig)?
+            .withTintColor(.white, renderingMode: .alwaysOriginal)
+
+        /* Канвас = натуральный размер app.fill. Квадрат по большей стороне. */
+        let naturalSize = background.size
+        let canvasDimension = max(naturalSize.width, naturalSize.height)
+        let canvasSize = CGSize(width: canvasDimension, height: canvasDimension)
+        let renderer = UIGraphicsImageRenderer(size: canvasSize)
+
+        return renderer.image { _ in
+            let backgroundOrigin = CGPoint(
+                x: (canvasDimension - naturalSize.width) / 2,
+                y: (canvasDimension - naturalSize.height) / 2
+            )
+            background.draw(at: backgroundOrigin)
+
+            if let icon {
+                let iconSize = icon.size
+                let iconOrigin = CGPoint(
+                    x: (canvasDimension - iconSize.width) / 2,
+                    y: (canvasDimension - iconSize.height) / 2
+                )
+                icon.draw(at: iconOrigin)
+            }
         }
-        
-        let settingsImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return settingsImage
     }
 }
 #endif
