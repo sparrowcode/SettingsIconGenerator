@@ -4,7 +4,7 @@ Generate icons matching Apple Settings style — colored squircle with a white S
 
 ## Installation
 
-In Xcode: File → Add Package Dependencies → paste the URL:
+In Xcode: File → Add Package Dependencies → paste URL:
 
 ```
 https://github.com/sparrowcode/SettingsIconGenerator
