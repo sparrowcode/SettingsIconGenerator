@@ -18,20 +18,8 @@ https://github.com/sparrowcode/SettingsIconGenerator
 SettingsIcon(systemName: "bell.fill", backgroundColor: .blue)
 ```
 
-Custom size:
-
-```swift
-SettingsIcon(systemName: "bell.fill", backgroundColor: .blue, size: .custom(48))
-```
-
 ### UIKit
 
 ```swift
 let image = UIImage.generateSettingsIcon("bell.fill", backgroundColor: .systemBlue)
-```
-
-With custom size:
-
-```swift
-let image = UIImage.generateSettingsIcon("bell.fill", backgroundColor: .systemBlue, size: .custom(48))
 ```
