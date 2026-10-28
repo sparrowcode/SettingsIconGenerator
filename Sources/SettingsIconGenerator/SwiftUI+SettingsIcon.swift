@@ -9,6 +9,8 @@ public struct SettingsIcon: View {
     let shape: SettingsIconShape
     let size: SettingsIconSize
 
+    @Environment(\.colorScheme) private var colorScheme
+
     public init(
         systemName: String,
         backgroundColor: Color,
@@ -44,6 +46,7 @@ public struct SettingsIcon: View {
                         .blendMode(.colorDodge)
                 }
                 .compositingGroup()
+                .environment(\.colorScheme, SettingsIconStyle.usesLightColor ? .light : colorScheme)
             /* Label в List ставит иконке imageScale(.large) — символ вырастает ~на четверть.
              Фиксируем .medium, чтобы размер задавал только iconFontSize. */
             Image(systemName: systemName)
@@ -52,5 +55,6 @@ public struct SettingsIcon: View {
                 .foregroundStyle(.white)
         }
         .frame(width: size.points, height: size.points)
+        .colorMultiply(Color(white: colorScheme == .dark ? SettingsIconStyle.darkModeBrightness : 1))
     }
 }

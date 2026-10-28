@@ -13,6 +13,9 @@ extension UIImage {
         shape: SettingsIconShape = .platformDefault,
         size: SettingsIconSize = .standard
     ) -> UIImage? {
+        let backgroundColor = SettingsIconStyle.usesLightColor
+            ? backgroundColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+            : backgroundColor
         let backgroundPointSize = size.points
         let iconPointSize = size.iconFontSize
 
@@ -32,7 +35,9 @@ extension UIImage {
         let canvasSize = CGSize(width: canvasDimension, height: canvasDimension)
         let renderer = UIGraphicsImageRenderer(size: canvasSize)
 
-        return renderer.image { _ in
+        let isDark = UITraitCollection.current.userInterfaceStyle == .dark
+
+        return renderer.image { context in
             let backgroundOrigin = CGPoint(
                 x: (canvasDimension - naturalSize.width) / 2,
                 y: (canvasDimension - naturalSize.height) / 2
@@ -47,6 +52,12 @@ extension UIImage {
                     y: (canvasDimension - iconSize.height) / 2
                 )
                 icon.draw(at: iconOrigin)
+            }
+
+            /* Чёрный поверх нарисованного с прозрачностью (1 - darkModeBrightness) умножает цвета на darkModeBrightness. */
+            if isDark && SettingsIconStyle.darkModeBrightness < 1 {
+                UIColor.black.withAlphaComponent(1 - SettingsIconStyle.darkModeBrightness).setFill()
+                context.fill(CGRect(origin: .zero, size: canvasSize), blendMode: .sourceAtop)
             }
         }
     }
