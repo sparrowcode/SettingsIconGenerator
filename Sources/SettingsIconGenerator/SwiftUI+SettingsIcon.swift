@@ -28,8 +28,11 @@ public struct SettingsIcon: View {
                 .scaledToFit()
                 .foregroundStyle(backgroundColor)
                 .frame(width: size.points, height: size.points)
+            /* Label в List ставит иконке imageScale(.large) — символ вырастает ~на четверть.
+             Фиксируем .medium, чтобы размер задавал только iconFontSize. */
             Image(systemName: systemName)
                 .font(.system(size: size.iconFontSize))
+                .imageScale(.medium)
                 .foregroundStyle(.white)
         }
         .frame(width: size.points, height: size.points)
