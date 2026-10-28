@@ -22,13 +22,28 @@ public struct SettingsIcon: View {
     }
 
     public var body: some View {
+        /* Фон рисуется шрифтом с pointSize = size.points, как в UIKit-генераторе.
+         resizable() растягивал бы форму на весь фрейм — фон выходил на ~10% крупнее, чем в UIKit. */
+        let background = Image(systemName: shape.backgroundSymbolName)
+            .font(.system(size: size.points))
+            .imageScale(.medium)
         ZStack {
-            /* Фон рисуется шрифтом с pointSize = size.points, как в UIKit-генераторе.
-             resizable() растягивал бы форму на весь фрейм — фон выходил на ~10% крупнее, чем в UIKit. */
-            Image(systemName: shape.backgroundSymbolName)
-                .font(.system(size: size.points))
-                .imageScale(.medium)
+            background
                 .foregroundStyle(backgroundColor)
+                .overlay {
+                    /* Color dodge с серым осветляет цвет пропорционально. К низу гаснет прозрачностью:
+                     переход от серого к чёрному SwiftUI интерполирует нелинейно, и осветление сходило на нет уже к середине. */
+                    background
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [Color(white: SettingsIconStyle.gradientDodge), Color(white: SettingsIconStyle.gradientDodge).opacity(0)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        .blendMode(.colorDodge)
+                }
+                .compositingGroup()
             /* Label в List ставит иконке imageScale(.large) — символ вырастает ~на четверть.
              Фиксируем .medium, чтобы размер задавал только iconFontSize. */
             Image(systemName: systemName)
