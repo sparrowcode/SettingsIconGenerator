@@ -46,16 +46,17 @@ pointSize 32 (фон) / 16 (символ) — ratio 1:2 — визуально �
 
 `draw(at: point)` рисует в натуральном размере. Squircle сохраняет форму.
 
-### SwiftUI: .resizable() требует .scaledToFit()
+### SwiftUI: фон шрифтом, не .resizable()
 
-`Image(systemName:).resizable()` теряет свойства SF Symbol. Без `.scaledToFit()` — `.frame()` растягивает непропорционально.
+`Image(systemName:).resizable().scaledToFit()` вписывает форму в весь фрейм: при `frame(32)` сквиркл получается 32 pt, а `UIImage` с pointSize 32 даёт сквиркл ~28.8 pt. Чтобы SwiftUI и UIKit совпадали, фон рисуется так же, как в UIKit — шрифтом:
 
 ```swift
 Image(systemName: "app.fill")
-    .resizable()
-    .scaledToFit()
-    .frame(width: 29, height: 29)
+    .font(.system(size: 31))
+    .imageScale(.medium)
 ```
+
+`.imageScale(.medium)` обязателен и для символа: `Label` в `List` ставит иконке `.imageScale(.large)`, символ вырастает ~на 25%.
 
 ## UIListContentConfiguration: изображения в ячейках
 

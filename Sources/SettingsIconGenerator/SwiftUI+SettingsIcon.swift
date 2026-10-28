@@ -23,11 +23,12 @@ public struct SettingsIcon: View {
 
     public var body: some View {
         ZStack {
+            /* Фон рисуется шрифтом с pointSize = size.points, как в UIKit-генераторе.
+             resizable() растягивал бы форму на весь фрейм — фон выходил на ~10% крупнее, чем в UIKit. */
             Image(systemName: shape.backgroundSymbolName)
-                .resizable()
-                .scaledToFit()
+                .font(.system(size: size.points))
+                .imageScale(.medium)
                 .foregroundStyle(backgroundColor)
-                .frame(width: size.points, height: size.points)
             /* Label в List ставит иконке imageScale(.large) — символ вырастает ~на четверть.
              Фиксируем .medium, чтобы размер задавал только iconFontSize. */
             Image(systemName: systemName)
