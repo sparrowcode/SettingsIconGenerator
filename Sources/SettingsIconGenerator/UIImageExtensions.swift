@@ -51,6 +51,11 @@ extension UIImage {
                     x: (canvasDimension - iconSize.width) / 2,
                     y: (canvasDimension - iconSize.height) / 2
                 )
+                context.cgContext.setShadow(
+                    offset: CGSize(width: 0, height: SettingsIconStyle.symbolShadowOffset),
+                    blur: SettingsIconStyle.symbolShadowRadius * 2,
+                    color: UIColor.black.withAlphaComponent(SettingsIconStyle.symbolShadowOpacity).cgColor
+                )
                 icon.draw(at: iconOrigin)
             }
 

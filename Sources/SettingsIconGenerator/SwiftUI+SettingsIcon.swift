@@ -53,6 +53,11 @@ public struct SettingsIcon: View {
                 .font(.system(size: size.iconFontSize))
                 .imageScale(.medium)
                 .foregroundStyle(.white)
+                .shadow(
+                    color: .black.opacity(SettingsIconStyle.symbolShadowOpacity),
+                    radius: SettingsIconStyle.symbolShadowRadius,
+                    y: SettingsIconStyle.symbolShadowOffset
+                )
         }
         .frame(width: size.points, height: size.points)
         .colorMultiply(Color(white: colorScheme == .dark ? SettingsIconStyle.darkModeBrightness : 1))

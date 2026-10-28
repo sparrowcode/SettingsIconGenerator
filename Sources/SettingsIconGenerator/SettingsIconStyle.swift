@@ -19,6 +19,17 @@ enum SettingsIconStyle {
     static let usesLightColor = false
     #endif
 
+    #if os(iOS) || os(watchOS)
+    /* Под символом мягкая тень: снизу затемняет фон на ~5% и тянется ~1.5 pt, по бокам слабее, сверху почти нет. */
+    static let symbolShadowOpacity: CGFloat = 0.09
+    static let symbolShadowOffset: CGFloat = 0.8
+    static let symbolShadowRadius: CGFloat = 0.75
+    #else
+    static let symbolShadowOpacity: CGFloat = 0
+    static let symbolShadowOffset: CGFloat = 0
+    static let symbolShadowRadius: CGFloat = 0
+    #endif
+
     #if os(iOS)
     /* В тёмной теме вся иконка вместе с символом темнее на ~8.5%: серый 142 → 129, белый символ → 233. */
     static let darkModeBrightness: CGFloat = 0.915
