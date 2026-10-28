@@ -6,7 +6,8 @@ let package = Package(
     name: "SettingsIconGenerator",
     platforms: [
         .iOS(.v15),
-        .macOS(.v13)
+        .macOS(.v13),
+        .watchOS(.v10)
     ],
     products: [
         .library(
