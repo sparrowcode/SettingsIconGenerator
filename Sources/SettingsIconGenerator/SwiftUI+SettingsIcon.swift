@@ -30,23 +30,23 @@ public struct SettingsIcon: View {
             .font(.system(size: size.points))
             .imageScale(.medium)
         ZStack {
-            background
-                .foregroundStyle(backgroundColor)
+            /* Цвет с градиентом заливает весь фрейм, форму задаёт маска из символа фона.
+             Color dodge прямо по символу давал тёмную кайму на сглаженном верхнем крае. */
+            Rectangle()
+                .fill(backgroundColor)
                 .overlay {
                     /* Color dodge с серым осветляет цвет пропорционально. К низу гаснет прозрачностью:
                      переход от серого к чёрному SwiftUI интерполирует нелинейно, и осветление сходило на нет уже к середине. */
-                    background
-                        .foregroundStyle(
-                            LinearGradient(
-                                colors: [Color(white: SettingsIconStyle.gradientDodge), Color(white: SettingsIconStyle.gradientDodge).opacity(0)],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                        .blendMode(.colorDodge)
+                    LinearGradient(
+                        colors: [Color(white: SettingsIconStyle.gradientDodge), Color(white: SettingsIconStyle.gradientDodge).opacity(0)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .blendMode(.colorDodge)
                 }
                 .compositingGroup()
                 .environment(\.colorScheme, SettingsIconStyle.usesLightColor ? .light : colorScheme)
+                .mask { background }
             /* Label в List ставит иконке imageScale(.large) — символ вырастает ~на четверть.
              Фиксируем .medium, чтобы размер задавал только iconFontSize. */
             Image(systemName: systemName)
