@@ -12,7 +12,7 @@ public struct SettingsIcon: View {
     public init(
         systemName: String,
         backgroundColor: Color,
-        shape: SettingsIconShape = .squircle,
+        shape: SettingsIconShape = .platformDefault,
         size: SettingsIconSize = .standard
     ) {
         self.systemName = systemName

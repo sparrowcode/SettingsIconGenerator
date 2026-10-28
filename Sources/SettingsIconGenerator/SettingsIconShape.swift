@@ -8,6 +8,16 @@ public enum SettingsIconShape: Sendable {
     /* Круг — стиль visionOS Settings. */
     case circle
 
+    /* Форма по умолчанию — как в системных Настройках платформы: круг на watchOS и visionOS. */
+    @usableFromInline
+    static var platformDefault: SettingsIconShape {
+        #if os(watchOS) || os(visionOS)
+        .circle
+        #else
+        .squircle
+        #endif
+    }
+
     /* SF Symbol, задающий форму фона. */
     var backgroundSymbolName: String {
         switch self {

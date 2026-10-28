@@ -10,7 +10,7 @@ extension UIImage {
     public static func generateSettingsIcon(
         _ systemName: String,
         backgroundColor: UIColor,
-        shape: SettingsIconShape = .squircle,
+        shape: SettingsIconShape = .platformDefault,
         size: SettingsIconSize = .standard
     ) -> UIImage? {
         let backgroundPointSize = size.points
