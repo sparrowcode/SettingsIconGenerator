@@ -19,6 +19,20 @@ enum SettingsIconStyle {
     static let usesLightColor = false
     #endif
 
+    #if os(iOS)
+    /* По верхнему и нижнему краю фона светлая кромка в один пиксель экрана: к цвету прибавляется серый (plus lighter),
+     синий 0,148,255 → ~60,210,255. Сверху сильнее, по бокам кромки нет. */
+    static let rimTopBrightness: CGFloat = 0.27
+    static let rimBottomBrightness: CGFloat = 0.22
+    #elseif os(watchOS)
+    /* На часах кромка ярче: верхний пиксель красного круга почти белый. */
+    static let rimTopBrightness: CGFloat = 0.35
+    static let rimBottomBrightness: CGFloat = 0.26
+    #else
+    static let rimTopBrightness: CGFloat = 0
+    static let rimBottomBrightness: CGFloat = 0
+    #endif
+
     #if os(iOS) || os(watchOS)
     /* Под символом мягкая тень: снизу затемняет фон на ~5% и тянется ~1.5 pt, по бокам слабее, сверху почти нет. */
     static let symbolShadowOpacity: CGFloat = 0.09
