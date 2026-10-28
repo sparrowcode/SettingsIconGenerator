@@ -1,6 +1,6 @@
 # SettingsIconGenerator
 
-Generate icons matching Apple Settings style — a colored background with a white SF Symbol. Pick a squircle (iOS) or circle (visionOS) shape.
+Generate icons matching Apple Settings style — a colored background with a white SF Symbol. Supports iOS, macOS, watchOS and visionOS.
 
 ## Installation
 
@@ -15,7 +15,9 @@ https://github.com/sparrowcode/SettingsIconGenerator
 ### SwiftUI
 
 ```swift
+// Squircle on iOS and macOS, circle on watchOS and visionOS
 SettingsIcon(systemName: "bell.fill", backgroundColor: .blue)
+// Force a shape
 SettingsIcon(systemName: "bell.fill", backgroundColor: .blue, shape: .circle)
 ```
 
