@@ -24,17 +24,13 @@ extension UIImage {
             .withTintColor(backgroundColor, renderingMode: .alwaysOriginal) else { return nil }
 
         let gradient = gradientFill(size: background.size, color: backgroundColor)
-        let topRim = rimOverlay(background, brightness: SettingsIconStyle.rimTopBrightness, towardsTop: true)
-        let bottomRim = rimOverlay(background, brightness: SettingsIconStyle.rimBottomBrightness, towardsTop: false)
 
-        /* Фон собирается на непрозрачном слое и обрезается формой в конце, как в SwiftUI.
-         Кромка в plus lighter прямо по полупрозрачным пикселям сглаженного края добавляла им серой плотности, и край темнел. */
+        /* Фон собирается на непрозрачном слое и обрезается формой в конце, как в SwiftUI:
+         градиент прямо по сглаженному краю символа давал тёмную кайму. */
         let backgroundLayer = UIGraphicsImageRenderer(size: background.size).image { context in
             backgroundColor.setFill()
             context.fill(CGRect(origin: .zero, size: background.size))
             gradient?.draw(at: .zero)
-            topRim?.draw(at: .zero, blendMode: .plusLighter, alpha: 1)
-            bottomRim?.draw(at: .zero, blendMode: .plusLighter, alpha: 1)
             background.draw(at: .zero, blendMode: .destinationIn, alpha: 1)
         }
 
@@ -95,18 +91,6 @@ extension UIImage {
                 end: CGPoint(x: 0, y: size.height),
                 options: [.drawsBeforeStartLocation, .drawsAfterEndLocation]
             )
-        }
-    }
-
-    /* Светлая кромка в один пиксель: фон серым цветом минус он же, сдвинутый на пиксель.
-     Кладётся поверх в режиме plus lighter. Как в SwiftUI-версии. */
-    private static func rimOverlay(_ background: UIImage, brightness: CGFloat, towardsTop: Bool) -> UIImage? {
-        guard brightness > 0 else { return nil }
-        let format = UIGraphicsImageRendererFormat.preferred()
-        let pixel = 1 / format.scale
-        return UIGraphicsImageRenderer(size: background.size, format: format).image { _ in
-            background.withTintColor(UIColor(white: brightness, alpha: 1), renderingMode: .alwaysOriginal).draw(at: .zero)
-            background.draw(at: CGPoint(x: 0, y: towardsTop ? pixel : -pixel), blendMode: .destinationOut, alpha: 1)
         }
     }
 }

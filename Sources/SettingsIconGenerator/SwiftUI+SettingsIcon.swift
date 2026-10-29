@@ -11,7 +11,6 @@ public struct SettingsIcon: View {
 
     @Environment(\.self) private var environment
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.displayScale) private var displayScale
 
     public init(
         systemName: String,
@@ -36,9 +35,6 @@ public struct SettingsIcon: View {
              градиент прямо по символу давал тёмную кайму на сглаженном верхнем крае. */
             Rectangle()
                 .fill(backgroundFill)
-                .overlay { rim(of: background, offset: 1 / displayScale, brightness: SettingsIconStyle.rimTopBrightness) }
-                .overlay { rim(of: background, offset: -1 / displayScale, brightness: SettingsIconStyle.rimBottomBrightness) }
-                .compositingGroup()
                 .environment(\.colorScheme, SettingsIconStyle.usesLightColor ? .light : colorScheme)
                 .mask { background }
             /* Label в List ставит иконке imageScale(.large) — символ вырастает ~на четверть.
@@ -96,18 +92,5 @@ public struct SettingsIcon: View {
         #else
         return nil
         #endif
-    }
-
-    /* Светлая кромка: фон минус он же, сдвинутый на offset. Положительный сдвиг оставляет полосу сверху, отрицательный — снизу.
-     Сдвиг — один пиксель экрана: дробный SwiftUI округляет к сетке, и на часах верхняя полоса пропадала. */
-    private func rim(of background: some View, offset: CGFloat, brightness: CGFloat) -> some View {
-        Rectangle()
-            .fill(Color(white: brightness))
-            .mask {
-                background
-                    .overlay { background.offset(y: offset).blendMode(.destinationOut) }
-                    .compositingGroup()
-            }
-            .blendMode(.plusLighter)
     }
 }
