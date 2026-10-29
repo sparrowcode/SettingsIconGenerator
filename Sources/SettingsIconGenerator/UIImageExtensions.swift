@@ -23,7 +23,7 @@ extension UIImage {
         guard let background = UIImage(systemName: shape.backgroundSymbolName, withConfiguration: backgroundConfig)?
             .withTintColor(backgroundColor, renderingMode: .alwaysOriginal) else { return nil }
 
-        let gradient = gradientOverlay(background, color: backgroundColor)
+        let gradient = gradientFill(size: background.size, color: backgroundColor)
         let topRim = rimOverlay(background, brightness: SettingsIconStyle.rimTopBrightness, towardsTop: true)
         let bottomRim = rimOverlay(background, brightness: SettingsIconStyle.rimBottomBrightness, towardsTop: false)
 
@@ -48,8 +48,6 @@ extension UIImage {
         let canvasSize = CGSize(width: canvasDimension, height: canvasDimension)
         let renderer = UIGraphicsImageRenderer(size: canvasSize)
 
-        let isDark = UITraitCollection.current.userInterfaceStyle == .dark
-
         return renderer.image { context in
             let backgroundOrigin = CGPoint(
                 x: (canvasDimension - naturalSize.width) / 2,
@@ -70,36 +68,33 @@ extension UIImage {
                 )
                 icon.draw(at: iconOrigin)
             }
-
-            /* Чёрный поверх нарисованного с прозрачностью (1 - darkModeBrightness) умножает цвета на darkModeBrightness. */
-            if isDark && SettingsIconStyle.darkModeBrightness < 1 {
-                UIColor.black.withAlphaComponent(1 - SettingsIconStyle.darkModeBrightness).setFill()
-                context.fill(CGRect(origin: .zero, size: canvasSize), blendMode: .sourceAtop)
-            }
         }
     }
 
-    /* Верх фона светлее низа: тот же фон в осветлённом цвете, растворяющийся к низу. Как в SwiftUI-версии. */
-    private static func gradientOverlay(_ background: UIImage, color: UIColor) -> UIImage? {
-        guard SettingsIconStyle.gradientDodge > 0 else { return nil }
-        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
-        guard color.getRed(&red, green: &green, blue: &blue, alpha: &alpha) else { return nil }
+    /* Верх фона светлее низа: цвета градиента стоят на тех же высотах, где замерены, за ними продолжаются. Как в SwiftUI-версии. */
+    private static func gradientFill(size: CGSize, color: UIColor) -> UIImage? {
+        guard let sRGB = CGColorSpace(name: CGColorSpace.sRGB),
+              let converted = color.cgColor.converted(to: sRGB, intent: .defaultIntent, options: nil),
+              let components = converted.components, components.count >= 3,
+              let gradient = SettingsIconGradient.make(red: components[0], green: components[1], blue: components[2])
+        else { return nil }
 
-        /* Color dodge: компонента делится на (1 - gradientDodge), но не выше 1. */
-        func dodge(_ component: CGFloat) -> CGFloat {
-            max(component, min(component / (1 - SettingsIconStyle.gradientDodge), 1))
+        func cgColor(_ value: SettingsIconGradient.Components) -> CGColor {
+            CGColor(colorSpace: sRGB, components: [value.red, value.green, value.blue, converted.alpha])!
         }
-        let lighter = UIColor(red: dodge(red), green: dodge(green), blue: dodge(blue), alpha: alpha)
-        let fade = CGGradient(
-            colorsSpace: nil,
-            colors: [UIColor.clear.cgColor, UIColor.black.cgColor] as CFArray,
-            locations: nil
-        )!
+        guard let fill = CGGradient(
+            colorsSpace: sRGB,
+            colors: [cgColor(gradient.top), cgColor(gradient.bottom)] as CFArray,
+            locations: [SettingsIconGradient.topLocation, SettingsIconGradient.bottomLocation]
+        ) else { return nil }
 
-        return UIGraphicsImageRenderer(size: background.size).image { context in
-            background.withTintColor(lighter, renderingMode: .alwaysOriginal).draw(at: .zero)
-            context.cgContext.setBlendMode(.destinationOut)
-            context.cgContext.drawLinearGradient(fade, start: .zero, end: CGPoint(x: 0, y: background.size.height), options: [])
+        return UIGraphicsImageRenderer(size: size).image { context in
+            context.cgContext.drawLinearGradient(
+                fill,
+                start: .zero,
+                end: CGPoint(x: 0, y: size.height),
+                options: [.drawsBeforeStartLocation, .drawsAfterEndLocation]
+            )
         }
     }
 

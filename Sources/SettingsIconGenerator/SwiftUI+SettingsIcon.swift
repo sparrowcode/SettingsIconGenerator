@@ -9,6 +9,7 @@ public struct SettingsIcon: View {
     let shape: SettingsIconShape
     let size: SettingsIconSize
 
+    @Environment(\.self) private var environment
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.displayScale) private var displayScale
 
@@ -31,20 +32,10 @@ public struct SettingsIcon: View {
             .font(.system(size: size.points))
             .imageScale(.medium)
         ZStack {
-            /* Цвет с градиентом заливает весь фрейм, форму задаёт маска из символа фона.
-             Color dodge прямо по символу давал тёмную кайму на сглаженном верхнем крае. */
+            /* Цвет с градиентом заливает весь фрейм, форму задаёт маска из символа фона:
+             градиент прямо по символу давал тёмную кайму на сглаженном верхнем крае. */
             Rectangle()
-                .fill(backgroundColor)
-                .overlay {
-                    /* Color dodge с серым осветляет цвет пропорционально. К низу гаснет прозрачностью:
-                     переход от серого к чёрному SwiftUI интерполирует нелинейно, и осветление сходило на нет уже к середине. */
-                    LinearGradient(
-                        colors: [Color(white: SettingsIconStyle.gradientDodge), Color(white: SettingsIconStyle.gradientDodge).opacity(0)],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .blendMode(.colorDodge)
-                }
+                .fill(backgroundFill)
                 .overlay { rim(of: background, offset: 1 / displayScale, brightness: SettingsIconStyle.rimTopBrightness) }
                 .overlay { rim(of: background, offset: -1 / displayScale, brightness: SettingsIconStyle.rimBottomBrightness) }
                 .compositingGroup()
@@ -63,7 +54,48 @@ public struct SettingsIcon: View {
                 )
         }
         .frame(width: size.points, height: size.points)
-        .colorMultiply(Color(white: colorScheme == .dark ? SettingsIconStyle.darkModeBrightness : 1))
+    }
+
+    /* Градиент из замеров или формулы, как в UIKit-версии. Где градиента нет — плоский цвет. */
+    private var backgroundFill: AnyShapeStyle {
+        guard let gradient else { return AnyShapeStyle(backgroundColor) }
+        func color(_ value: SettingsIconGradient.Components) -> Color {
+            Color(.sRGB, red: value.red, green: value.green, blue: value.blue)
+        }
+        return AnyShapeStyle(LinearGradient(
+            stops: [
+                .init(color: color(gradient.top), location: SettingsIconGradient.topLocation),
+                .init(color: color(gradient.bottom), location: SettingsIconGradient.bottomLocation)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        ))
+    }
+
+    private var gradient: SettingsIconGradient? {
+        #if os(iOS) || os(watchOS)
+        var environment = environment
+        if SettingsIconStyle.usesLightColor {
+            environment.colorScheme = .light
+        }
+        let resolved: CGColor
+        if #available(iOS 17, watchOS 10, *) {
+            resolved = backgroundColor.resolve(in: environment).cgColor
+        } else {
+            #if os(iOS)
+            let style: UIUserInterfaceStyle = environment.colorScheme == .dark ? .dark : .light
+            resolved = UIColor(backgroundColor).resolvedColor(with: UITraitCollection(userInterfaceStyle: style)).cgColor
+            #else
+            return nil
+            #endif
+        }
+        guard let sRGB = CGColorSpace(name: CGColorSpace.sRGB),
+              let components = resolved.converted(to: sRGB, intent: .defaultIntent, options: nil)?.components,
+              components.count >= 3 else { return nil }
+        return SettingsIconGradient.make(red: components[0], green: components[1], blue: components[2])
+        #else
+        return nil
+        #endif
     }
 
     /* Светлая кромка: фон минус он же, сдвинутый на offset. Положительный сдвиг оставляет полосу сверху, отрицательный — снизу.
