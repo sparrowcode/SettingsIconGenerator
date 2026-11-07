@@ -17,7 +17,7 @@ extension UIImage {
             ? backgroundColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
             : backgroundColor
         let backgroundPointSize = size.points
-        let iconPointSize = size.iconFontSize
+        let iconPointSize = size.iconFontSize * SettingsIconSymbolScale.scale(for: systemName)
 
         let backgroundConfig = UIImage.SymbolConfiguration(pointSize: backgroundPointSize, weight: .regular)
         guard let background = UIImage(systemName: shape.backgroundSymbolName, withConfiguration: backgroundConfig)?

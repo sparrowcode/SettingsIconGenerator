@@ -40,7 +40,7 @@ public struct SettingsIcon: View {
             /* Label в List ставит иконке imageScale(.large) — символ вырастает ~на четверть.
              Фиксируем .medium, чтобы размер задавал только iconFontSize. */
             Image(systemName: systemName)
-                .font(.system(size: size.iconFontSize))
+                .font(.system(size: size.iconFontSize * SettingsIconSymbolScale.scale(for: systemName)))
                 .imageScale(.medium)
                 .foregroundStyle(.white)
                 .shadow(
