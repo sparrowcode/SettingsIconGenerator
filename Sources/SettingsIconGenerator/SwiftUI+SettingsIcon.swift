@@ -25,8 +25,7 @@ public struct SettingsIcon: View {
     }
 
     public var body: some View {
-        let metrics = SettingsIconMetrics.current
-        let layout = SettingsIconLayout(systemName: systemName, size: size, metrics: metrics)
+        let layout = SettingsIconLayout(systemName: systemName, size: size)
         /* Фон рисуется шрифтом с pointSize фона, как в UIKit-генераторе.
          resizable() растягивал бы форму на весь фрейм — фон выходил на ~10% крупнее, чем в UIKit. */
         let background = Image(systemName: shape.backgroundSymbolName)
@@ -36,8 +35,8 @@ public struct SettingsIcon: View {
             /* Цвет с градиентом заливает весь фрейм, форму задаёт маска из символа фона:
              градиент прямо по символу давал тёмную кайму на сглаженном верхнем крае. */
             Rectangle()
-                .fill(backgroundFill(metrics))
-                .environment(\.colorScheme, metrics.usesLightColor ? .light : colorScheme)
+                .fill(backgroundFill(layout))
+                .environment(\.colorScheme, layout.usesLightColor ? .light : colorScheme)
                 .mask { background }
             /* Label в List ставит иконке imageScale(.large) — символ вырастает ~на четверть.
              Фиксируем .medium, чтобы размер задавал только layout. */
@@ -51,18 +50,18 @@ public struct SettingsIcon: View {
         .frame(width: layout.backgroundPoints, height: layout.backgroundPoints)
     }
 
-    /* Градиент из метрик платформы; где его нет — плоский цвет. */
-    private func backgroundFill(_ metrics: SettingsIconMetrics) -> AnyShapeStyle {
-        guard let background = metrics.background,
-              let resolved = resolvedColor(light: metrics.usesLightColor) else { return AnyShapeStyle(backgroundColor) }
-        let gradient = background.gradient(for: resolved)
+    /* Градиент из layout; где его нет — плоский цвет. */
+    private func backgroundFill(_ layout: SettingsIconLayout) -> AnyShapeStyle {
+        guard layout.hasGradient,
+              let resolved = resolvedColor(light: layout.usesLightColor),
+              let fill = layout.fill(for: resolved) else { return AnyShapeStyle(backgroundColor) }
         func color(_ value: SettingsIconColor) -> Color {
             Color(.sRGB, red: value.red, green: value.green, blue: value.blue)
         }
         return AnyShapeStyle(LinearGradient(
             stops: [
-                .init(color: color(gradient.top), location: background.topLocation),
-                .init(color: color(gradient.bottom), location: background.bottomLocation)
+                .init(color: color(fill.top), location: fill.topLocation),
+                .init(color: color(fill.bottom), location: fill.bottomLocation)
             ],
             startPoint: .top,
             endPoint: .bottom

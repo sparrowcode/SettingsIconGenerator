@@ -58,9 +58,9 @@ final class MetricsTests: XCTestCase {
     /* Формула для цветов без замера: по замеренным цветам iOS не дальше 6 единиц от системы. */
     func testFallbackCloseToMeasuredIOS() {
         let background = SettingsIconMetrics.iOS.background!
-        guard case let .dodge(dodge, white) = background.fallback else { return XCTFail() }
+        XCTAssertEqual(background.fallback, .init(dodge: 0.08, white: 0.0225))
         for measured in background.palette where measured.bottom != .init((0, 0, 0)) {
-            let top = measured.bottom.dodged(dodge, white: white)
+            let top = background.fallback.apply(to: measured.bottom)
             for (formula, system) in [(top.red, measured.top.red), (top.green, measured.top.green), (top.blue, measured.top.blue)] {
                 XCTAssertLessThanOrEqual(abs(formula - system) * 255, 6.5, "\(measured)")
             }
@@ -88,7 +88,7 @@ final class MetricsTests: XCTestCase {
         let palette = SettingsIconMetrics.iOS.background!.palette
         for color in [UIColor.systemRed, .systemOrange, .systemGreen, .systemBlue, .systemIndigo, .systemGray, .black] {
             let resolved = SettingsIconColor(color.resolvedColor(with: light).cgColor)!
-            XCTAssertTrue(palette.contains { $0.source.isClose(to: resolved) }, "\(color) → \(resolved)")
+            XCTAssertTrue(palette.contains { $0.bottom.isClose(to: resolved) }, "\(color) → \(resolved)")
         }
     }
     #endif

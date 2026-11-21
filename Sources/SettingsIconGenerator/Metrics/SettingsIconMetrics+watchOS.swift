@@ -25,7 +25,7 @@ extension SettingsIconMetrics {
                 .init(top: (109, 96, 255), bottom: (97, 85, 245)),  // индиго
                 .init(top: (255, 51, 95), bottom: (255, 45, 85))    // розовый
             ],
-            fallback: .dodge(0.08, white: 0.0225)
+            fallback: .init(dodge: 0.08, white: 0.0225)
         )
     )
 }
