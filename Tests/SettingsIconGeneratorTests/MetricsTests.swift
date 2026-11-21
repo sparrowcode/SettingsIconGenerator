@@ -93,3 +93,40 @@ final class MetricsTests: XCTestCase {
     }
     #endif
 }
+
+/* Сверка visionOS со скриншотом Settings на visionOS 27.2 (координаты Display P3): не дальше 2 единиц на компоненту. */
+final class VisionMetricsTests: XCTestCase {
+
+    func testVisionOSMatchesSettings() {
+        let metrics = SettingsIconMetrics.visionOS
+        XCTAssertEqual(metrics.shape, .circle)
+        XCTAssertEqual(metrics.standardPoints, 32)
+        XCTAssertEqual(metrics.glyphRatio, 0.6)
+        XCTAssertTrue(metrics.usesLightColor)
+        let background = try! XCTUnwrap(metrics.background)
+        let measured: [((Int, Int, Int), top: (Int, Int, Int), bottom: (Int, Int, Int))] = [
+            ((52, 199, 89), (112, 210, 114), (101, 197, 102)),   // зелёный, «Люди»
+            ((0, 136, 255), (64, 144, 247), (59, 134, 247)),     // синий, «Универсальный доступ»
+            ((97, 85, 245), (107, 97, 246), (95, 85, 237)),      // индиго, «Окружения»
+            ((142, 142, 147), (159, 159, 164), (144, 144, 149))  // серый, «Шрифты»
+        ]
+        for (source, top, bottom) in measured {
+            let gradient = background.gradient(for: .init(source))
+            assertClose(displayP3(gradient.top), .init(top), "\(source) top")
+            assertClose(displayP3(gradient.bottom), .init(bottom), "\(source) bottom")
+        }
+    }
+
+    private func displayP3(_ color: SettingsIconColor) -> SettingsIconColor {
+        let sRGB = CGColorSpace(name: CGColorSpace.sRGB)!
+        let converted = CGColor(colorSpace: sRGB, components: [color.red, color.green, color.blue, 1])!
+            .converted(to: CGColorSpace(name: CGColorSpace.displayP3)!, intent: .defaultIntent, options: nil)!
+        return SettingsIconColor(red: converted.components![0], green: converted.components![1], blue: converted.components![2])
+    }
+
+    private func assertClose(_ a: SettingsIconColor, _ b: SettingsIconColor, _ message: String) {
+        for (x, y) in [(a.red, b.red), (a.green, b.green), (a.blue, b.blue)] {
+            XCTAssertLessThanOrEqual(abs(x - y) * 255, 2.5, message)
+        }
+    }
+}
