@@ -56,6 +56,7 @@ extension UIImage {
                 let iconOrigin = CGPoint(
                     x: (canvasDimension - iconSize.width) / 2,
                     y: (canvasDimension - iconSize.height) / 2
+                        + iconPointSize * SettingsIconSymbolScale.verticalOffset(for: systemName)
                 )
                 context.cgContext.setShadow(
                     offset: CGSize(width: 0, height: SettingsIconStyle.symbolShadowOffset),

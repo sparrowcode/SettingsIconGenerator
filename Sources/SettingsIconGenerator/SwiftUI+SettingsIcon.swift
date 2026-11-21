@@ -40,9 +40,10 @@ public struct SettingsIcon: View {
             /* Label в List ставит иконке imageScale(.large) — символ вырастает ~на четверть.
              Фиксируем .medium, чтобы размер задавал только iconFontSize. */
             Image(systemName: systemName)
-                .font(.system(size: size.iconFontSize * SettingsIconSymbolScale.scale(for: systemName)))
+                .font(.system(size: iconPointSize))
                 .imageScale(.medium)
                 .foregroundStyle(.white)
+                .offset(y: iconPointSize * SettingsIconSymbolScale.verticalOffset(for: systemName))
                 .shadow(
                     color: .black.opacity(SettingsIconStyle.symbolShadowOpacity),
                     radius: SettingsIconStyle.symbolShadowRadius,
@@ -50,6 +51,10 @@ public struct SettingsIcon: View {
                 )
         }
         .frame(width: size.points, height: size.points)
+    }
+
+    private var iconPointSize: CGFloat {
+        size.iconFontSize * SettingsIconSymbolScale.scale(for: systemName)
     }
 
     /* Градиент из замеров или формулы, как в UIKit-версии. Где градиента нет — плоский цвет. */
