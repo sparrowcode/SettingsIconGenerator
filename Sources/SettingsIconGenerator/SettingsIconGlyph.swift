@@ -1,16 +1,18 @@
 import CoreGraphics
 
-/* Поправка размера символа по его имени, поверх общего iconRatio.
- Apple подгоняет размер под каждый глиф, а общий коэффициент даёт среднее совпадение:
- широкие символы упираются в края фона, отдельные выходят мельче системных. */
-enum SettingsIconSymbolScale {
+/* Оптические поправки отдельных глифов, общие для всех платформ.
+ Apple подгоняет каждый глиф под фон, а общая доля glyphRatio даёт среднее совпадение:
+ широкие символы упираются в края фона, отдельные выходят мельче или ниже системных.
+ Подгонка под Настройки конкретной платформы сюда не относится — она в SettingsIconMetrics. */
+enum SettingsIconGlyph {
 
+    /* Множитель pointSize глифа поверх glyphRatio. */
     static func scale(for systemName: String) -> CGFloat {
-        corrections[systemName] ?? 1
+        scales[systemName] ?? 1
     }
 
-    /* Сдвиг символа по вертикали в долях его pointSize, минус — вверх.
-     Символ ставится по центру рамки, а у глифов с весом внизу (треугольник) центр тяжести ниже центра рамки:
+    /* Сдвиг глифа по вертикали в долях его pointSize, минус — вверх.
+     Глиф ставится по центру рамки, а у глифов с весом внизу (треугольник) центр тяжести ниже центра рамки:
      в круге и сквиркле они выглядят опущенными. */
     static func verticalOffset(for systemName: String) -> CGFloat {
         verticalOffsets[systemName] ?? 0
@@ -21,7 +23,7 @@ enum SettingsIconSymbolScale {
         "exclamationmark.triangle.fill": -0.1
     ]
 
-    private static let corrections: [String: CGFloat] = [
+    private static let scales: [String: CGFloat] = [
         /* Без поправки 98% ширины сквиркла: волны касаются краёв. С 0.85 — около 83%. */
         "iphone.radiowaves.left.and.right": 0.85,
         /* В Settings на iOS 27 шестерёнка 21.3 pt, без поправки 19 pt. */

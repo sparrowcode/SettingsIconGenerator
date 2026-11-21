@@ -1,21 +1,17 @@
 /* Форма фона иконки в стиле Apple Settings.
- squircle — скруглённый квадрат (iOS), circle — круг (visionOS). */
+ squircle — скруглённый квадрат (iOS), circle — круг (watchOS, visionOS). */
 public enum SettingsIconShape: Sendable {
 
     /* Скруглённый квадрат — стиль iOS Settings. */
     case squircle
 
-    /* Круг — стиль visionOS Settings. */
+    /* Круг — стиль watchOS и visionOS Settings. */
     case circle
 
-    /* Форма по умолчанию — как в системных Настройках платформы: круг на watchOS и visionOS. */
+    /* Форма по умолчанию — как в системных Настройках платформы. */
     @usableFromInline
     static var platformDefault: SettingsIconShape {
-        #if os(watchOS) || os(visionOS)
-        .circle
-        #else
-        .squircle
-        #endif
+        SettingsIconMetrics.current.shape
     }
 
     /* SF Symbol, задающий форму фона. */

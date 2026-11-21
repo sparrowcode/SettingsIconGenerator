@@ -6,24 +6,24 @@ extension UIImage {
     /* Генерирует иконку в стиле Apple Settings: цветной фон (squircle или circle) с белым SF Symbol по центру.
      Рендерит фон в натуральном размере SF Symbol — без масштабирования, без канвас-ограничений.
      Корректный layout в UIListContentConfiguration обеспечивается через reservedLayoutSize и maximumSize
-     на стороне потребителя, а не через размер изображения. */
+     на стороне потребителя, а не через размер изображения. Числа берутся из SettingsIconLayout, как в SwiftUI. */
     public static func generateSettingsIcon(
         _ systemName: String,
         backgroundColor: UIColor,
         shape: SettingsIconShape = .platformDefault,
         size: SettingsIconSize = .standard
     ) -> UIImage? {
-        let backgroundColor = SettingsIconStyle.usesLightColor
+        let metrics = SettingsIconMetrics.current
+        let layout = SettingsIconLayout(systemName: systemName, size: size, metrics: metrics)
+        let backgroundColor = metrics.usesLightColor
             ? backgroundColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
             : backgroundColor
-        let backgroundPointSize = size.points
-        let iconPointSize = size.iconFontSize * SettingsIconSymbolScale.scale(for: systemName)
 
-        let backgroundConfig = UIImage.SymbolConfiguration(pointSize: backgroundPointSize, weight: .regular)
+        let backgroundConfig = UIImage.SymbolConfiguration(pointSize: layout.backgroundPoints, weight: .regular)
         guard let background = UIImage(systemName: shape.backgroundSymbolName, withConfiguration: backgroundConfig)?
             .withTintColor(backgroundColor, renderingMode: .alwaysOriginal) else { return nil }
 
-        let gradient = gradientFill(size: background.size, color: backgroundColor)
+        let gradient = metrics.background.flatMap { gradientFill(size: background.size, color: backgroundColor, background: $0) }
 
         /* Фон собирается на непрозрачном слое и обрезается формой в конце, как в SwiftUI:
          градиент прямо по сглаженному краю символа давал тёмную кайму. */
@@ -34,7 +34,7 @@ extension UIImage {
             background.draw(at: .zero, blendMode: .destinationIn, alpha: 1)
         }
 
-        let iconConfig = UIImage.SymbolConfiguration(pointSize: iconPointSize, weight: .regular)
+        let iconConfig = UIImage.SymbolConfiguration(pointSize: layout.glyphPoints, weight: .regular)
         let icon = UIImage(systemName: systemName, withConfiguration: iconConfig)?
             .withTintColor(.white, renderingMode: .alwaysOriginal)
 
@@ -55,13 +55,12 @@ extension UIImage {
                 let iconSize = icon.size
                 let iconOrigin = CGPoint(
                     x: (canvasDimension - iconSize.width) / 2,
-                    y: (canvasDimension - iconSize.height) / 2
-                        + iconPointSize * SettingsIconSymbolScale.verticalOffset(for: systemName)
+                    y: (canvasDimension - iconSize.height) / 2 + layout.glyphOffset
                 )
                 context.cgContext.setShadow(
-                    offset: CGSize(width: 0, height: SettingsIconStyle.symbolShadowOffset),
-                    blur: SettingsIconStyle.symbolShadowRadius * 2,
-                    color: UIColor.black.withAlphaComponent(SettingsIconStyle.symbolShadowOpacity).cgColor
+                    offset: CGSize(width: 0, height: layout.shadow.offset),
+                    blur: layout.shadow.radius * 2,
+                    color: UIColor.black.withAlphaComponent(layout.shadow.opacity).cgColor
                 )
                 icon.draw(at: iconOrigin)
             }
@@ -69,20 +68,19 @@ extension UIImage {
     }
 
     /* Верх фона светлее низа: цвета градиента стоят на тех же высотах, где замерены, за ними продолжаются. Как в SwiftUI-версии. */
-    private static func gradientFill(size: CGSize, color: UIColor) -> UIImage? {
+    private static func gradientFill(size: CGSize, color: UIColor, background: SettingsIconBackground) -> UIImage? {
         guard let sRGB = CGColorSpace(name: CGColorSpace.sRGB),
-              let converted = color.cgColor.converted(to: sRGB, intent: .defaultIntent, options: nil),
-              let components = converted.components, components.count >= 3,
-              let gradient = SettingsIconGradient.make(red: components[0], green: components[1], blue: components[2])
-        else { return nil }
+              let components = SettingsIconColor(color.cgColor) else { return nil }
+        let gradient = background.gradient(for: components)
+        let alpha = color.cgColor.alpha
 
-        func cgColor(_ value: SettingsIconGradient.Components) -> CGColor {
-            CGColor(colorSpace: sRGB, components: [value.red, value.green, value.blue, converted.alpha])!
+        func cgColor(_ value: SettingsIconColor) -> CGColor {
+            CGColor(colorSpace: sRGB, components: [value.red, value.green, value.blue, alpha])!
         }
         guard let fill = CGGradient(
             colorsSpace: sRGB,
             colors: [cgColor(gradient.top), cgColor(gradient.bottom)] as CFArray,
-            locations: [SettingsIconGradient.topLocation, SettingsIconGradient.bottomLocation]
+            locations: [background.topLocation, background.bottomLocation]
         ) else { return nil }
 
         return UIGraphicsImageRenderer(size: size).image { context in

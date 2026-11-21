@@ -1,52 +1,31 @@
 import CoreGraphics
 
 /* Размер иконки в стиле Apple Settings.
- Определяет pointSize для фона (app.fill / circle.fill) и пропорции внутренней иконки.
+ Определяет pointSize для фона (app.fill / circle.fill) и пропорции глифа.
  Итоговый intrinsic size изображения определяется натуральным размером SF Symbol. */
 public enum SettingsIconSize: Sendable {
 
-    /* Стандартный размер под системные Настройки текущей платформы.
-     iOS: pointSize 31 — сквиркл 28 pt, как в Settings на iOS 27.
-     watchOS: pointSize 25.5 — круг 24 pt.
-     visionOS: pointSize 32 — круг 32 pt. */
+    /* Стандартный размер под системные Настройки текущей платформы, замеры в SettingsIconMetrics.
+     iOS: сквиркл 28 pt. watchOS: круг 24 pt. visionOS: круг 32 pt. */
     case standard
 
-    /* Произвольный pointSize для фона. Иконка — iconRatio от этого значения. */
+    /* Произвольный pointSize для фона. Глиф — доля от этого значения. */
     case custom(CGFloat)
 
     /* pointSize для фонового SF Symbol. */
     public var points: CGFloat {
+        points(.current)
+    }
+
+    /* pointSize для SF Symbol глифа, без поправки конкретного глифа. */
+    public var iconFontSize: CGFloat {
+        points * SettingsIconMetrics.current.glyphRatio
+    }
+
+    func points(_ metrics: SettingsIconMetrics) -> CGFloat {
         switch self {
-        case .standard: Self.standardPoints
+        case .standard: metrics.standardPoints
         case .custom(let value): value
         }
     }
-
-    /* pointSize для SF Symbol иконки. */
-    public var iconFontSize: CGFloat {
-        points * Self.iconRatio
-    }
-
-    #if os(watchOS)
-    /* На часах круг 24 pt (Ultra и обычные): circle.fill на watchOS даёт 0.94 от pointSize. */
-    static let standardPoints: CGFloat = 25.5
-
-    /* Символ в Settings на watchOS 27 — около 12.8 pt (колокольчик 12 pt в высоту) на круге 24 pt. */
-    static let iconRatio: CGFloat = 0.5
-    #elseif os(visionOS)
-    /* В Settings на visionOS круг 32 pt: circle.fill даёт ~1.0 от pointSize. */
-    static let standardPoints: CGFloat = 32
-
-    /* Символ в Settings на visionOS 27 — около 19.2 pt на круге 32 pt. */
-    static let iconRatio: CGFloat = 0.6
-    #else
-    /* Замерено по скриншотам Settings: app.fill даёт фон 0.9 от pointSize. */
-    static let standardPoints: CGFloat = 31
-
-    /* Символ в Settings на iOS 27 — около 17.4 pt на сквиркле 28 pt. */
-    static let iconRatio: CGFloat = 0.56
-    #endif
 }
-
-/* SF Symbol для фона-сквиркла. */
-let backgroundSymbolName = "app.fill"
