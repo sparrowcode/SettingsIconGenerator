@@ -7,7 +7,8 @@ let package = Package(
     platforms: [
         .iOS(.v15),
         .macOS(.v13),
-        .watchOS(.v10)
+        .watchOS(.v10),
+        .visionOS(.v1)
     ],
     products: [
         .library(
@@ -18,6 +19,10 @@ let package = Package(
     targets: [
         .target(
             name: "SettingsIconGenerator"
+        ),
+        .testTarget(
+            name: "SettingsIconGeneratorTests",
+            dependencies: ["SettingsIconGenerator"]
         )
     ]
 )
