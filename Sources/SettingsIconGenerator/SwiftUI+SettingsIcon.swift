@@ -25,7 +25,7 @@ public struct SettingsIcon: View {
     }
 
     public var body: some View {
-        let layout = SettingsIconLayout(systemName: systemName, size: size)
+        let layout = SettingsIconLayout(systemName: systemName, size: size, shape: shape)
         /* Фон рисуется шрифтом с pointSize фона, как в UIKit-генераторе.
          resizable() растягивал бы форму на весь фрейм — фон выходил на ~10% крупнее, чем в UIKit. */
         let background = Image(systemName: shape.backgroundSymbolName)
@@ -38,6 +38,12 @@ public struct SettingsIcon: View {
                 .fill(backgroundFill(layout))
                 .environment(\.colorScheme, layout.usesLightColor ? .light : colorScheme)
                 .mask { background }
+                .shadow(color: .black.opacity(layout.plateShadow.opacity), radius: layout.plateShadow.radius, y: layout.plateShadow.offset)
+            if let rim = layout.rim {
+                /* Кромка сверху: форма минус та же форма, сдвинутая вниз на толщину кромки. Снизу — наоборот. */
+                rimBand(background, width: rim.width, opacity: rim.topOpacity)
+                rimBand(background, width: -rim.width, opacity: rim.bottomOpacity)
+            }
             /* Label в List ставит иконке imageScale(.large) — символ вырастает ~на четверть.
              Фиксируем .medium, чтобы размер задавал только layout. */
             Image(systemName: systemName)
@@ -47,7 +53,19 @@ public struct SettingsIcon: View {
                 .offset(y: layout.glyphOffset)
                 .shadow(color: .black.opacity(layout.shadow.opacity), radius: layout.shadow.radius, y: layout.shadow.offset)
         }
-        .frame(width: layout.backgroundPoints, height: layout.backgroundPoints)
+        .frame(width: layout.frameSide, height: layout.frameSide)
+    }
+
+    /* Белая полоска вдоль края формы: `width` > 0 — верхний край, < 0 — нижний. */
+    private func rimBand(_ shape: some View, width: CGFloat, opacity: CGFloat) -> some View {
+        Rectangle()
+            .fill(.white.opacity(opacity))
+            .mask {
+                shape
+                    .overlay { shape.offset(y: width).blendMode(.destinationOut) }
+                    .compositingGroup()
+            }
+            .blendMode(.plusLighter)
     }
 
     /* Градиент из layout; где его нет — плоский цвет. */

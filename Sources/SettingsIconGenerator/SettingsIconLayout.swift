@@ -7,6 +7,9 @@ struct SettingsIconLayout {
     /* pointSize фонового символа. */
     let backgroundPoints: CGFloat
 
+    /* Сторона рамки SwiftUI-иконки: pointSize фона или, где метрики просят, видимая плашка. */
+    let frameSide: CGFloat
+
     /* pointSize глифа с поправкой глифа. */
     let glyphPoints: CGFloat
 
@@ -15,16 +18,30 @@ struct SettingsIconLayout {
 
     let shadow: SettingsIconMetrics.Shadow
 
+    /* Тень под плашкой и кромка, см. SettingsIconMetrics. */
+    let plateShadow: SettingsIconMetrics.Shadow
+    let rim: SettingsIconMetrics.Rim?
+
     /* Цвет фона берётся в светлом варианте, какой бы ни была тема. */
     let usesLightColor: Bool
 
     private let background: SettingsIconBackground?
 
-    init(systemName: String, size: SettingsIconSize, metrics: SettingsIconMetrics = .current) {
+    init(systemName: String, size: SettingsIconSize, shape: SettingsIconShape = .platformDefault, metrics: SettingsIconMetrics = .current) {
         backgroundPoints = size.points(metrics)
-        glyphPoints = backgroundPoints * metrics.glyphRatio * SettingsIconGlyph.scale(for: systemName)
+        frameSide = metrics.framesPlate ? backgroundPoints * shape.plateRatio : backgroundPoints
+        glyphPoints = backgroundPoints * metrics.glyphRatio * metrics.glyphScale(for: systemName)
         glyphOffset = glyphPoints * SettingsIconGlyph.verticalOffset(for: systemName)
         shadow = metrics.shadow
+        /* Тень плашки и кромка замерены на стандартном размере и растут вместе с иконкой: у карточек 26 pt кромка ярче
+         (+35 против +26), тень шире. */
+        let scale = backgroundPoints / metrics.standardPoints
+        plateShadow = SettingsIconMetrics.Shadow(
+            opacity: metrics.plateShadow.opacity,
+            offset: metrics.plateShadow.offset * scale,
+            radius: metrics.plateShadow.radius * scale
+        )
+        rim = metrics.rim.map { .init(width: $0.width, topOpacity: $0.topOpacity * scale, bottomOpacity: $0.bottomOpacity * scale) }
         usesLightColor = metrics.usesLightColor
         background = metrics.background
     }

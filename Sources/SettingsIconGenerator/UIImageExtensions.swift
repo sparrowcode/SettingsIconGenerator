@@ -13,7 +13,7 @@ extension UIImage {
         shape: SettingsIconShape = .platformDefault,
         size: SettingsIconSize = .standard
     ) -> UIImage? {
-        let layout = SettingsIconLayout(systemName: systemName, size: size)
+        let layout = SettingsIconLayout(systemName: systemName, size: size, shape: shape)
         let backgroundColor = layout.usesLightColor
             ? backgroundColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
             : backgroundColor

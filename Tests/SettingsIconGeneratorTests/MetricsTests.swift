@@ -37,13 +37,34 @@ final class MetricsTests: XCTestCase {
         XCTAssertEqual(background.gradient(for: .init((255, 141, 40))), .init(top: (249, 151, 53), bottom: (255, 141, 40)))
     }
 
-    func testMacOSFollowsIOSSizesWithFlatBackground() {
+    /* Замеры System Settings на macOS 27.2.1: плашка 20 pt по пикселям, градиент iOS, тень плашки и кромка. */
+    func testMacOS() {
         let metrics = SettingsIconMetrics.macOS
         XCTAssertEqual(metrics.shape, .squircle)
-        XCTAssertEqual(metrics.standardPoints, SettingsIconMetrics.iOS.standardPoints)
-        XCTAssertEqual(metrics.glyphRatio, SettingsIconMetrics.iOS.glyphRatio)
-        XCTAssertNil(metrics.background)
-        XCTAssertEqual(metrics.shadow, .none)
+        XCTAssertEqual(metrics.standardPoints * SettingsIconShape.squircle.plateRatio, 20, accuracy: 0.0001)
+        XCTAssertEqual(metrics.glyphRatio, 0.58)
+        XCTAssertTrue(metrics.usesLightColor)
+        XCTAssertEqual(metrics.shadow, SettingsIconMetrics.iOS.shadow)
+        XCTAssertEqual(metrics.background?.palette, SettingsIconMetrics.iOS.background?.palette)
+        XCTAssertEqual(metrics.plateShadow, .init(opacity: 0.35, offset: 0.5, radius: 1))
+        XCTAssertEqual(metrics.rim, .init(width: 0.5, topOpacity: 0.1, bottomOpacity: 0.063))
+        XCTAssertTrue(metrics.framesPlate)
+    }
+
+    /* На macOS рамка — видимая плашка, тень и кромка растут с размером; шестерёнка без iOS-поправки. */
+    func testMacOSLayout() {
+        let standard = SettingsIconLayout(systemName: "bolt.fill", size: .standard, metrics: .macOS)
+        XCTAssertEqual(standard.frameSide, 20, accuracy: 0.0001)
+        let card = SettingsIconLayout(systemName: "bolt.fill", size: .custom(26 / 0.9), metrics: .macOS)
+        XCTAssertEqual(card.frameSide, 26, accuracy: 0.0001)
+        XCTAssertEqual(card.plateShadow.radius, 1.3, accuracy: 0.0001)
+        XCTAssertEqual(card.rim?.topOpacity ?? 0, 0.13, accuracy: 0.0001)
+        let gear = SettingsIconLayout(systemName: "gear", size: .standard, metrics: .macOS)
+        XCTAssertEqual(gear.glyphPoints, standard.glyphPoints, accuracy: 0.0001)
+        let iOS = SettingsIconLayout(systemName: "bolt.fill", size: .standard, metrics: .iOS)
+        XCTAssertEqual(iOS.frameSide, 31)
+        XCTAssertEqual(iOS.plateShadow, .none)
+        XCTAssertNil(iOS.rim)
     }
 
     /* Цвет в пределах 3 единиц от системного берёт замер, дальше — формулу. */

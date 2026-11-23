@@ -24,6 +24,48 @@ struct SettingsIconMetrics: Sendable {
     /* Градиент фона; nil — фон плоский, исходным цветом. */
     let background: SettingsIconBackground?
 
+    /* Тень под всей плашкой. На macOS иконка Настроек лежит на тени, на остальных платформах её нет. */
+    let plateShadow: Shadow
+
+    /* Светлая кромка по верхнему и нижнему краю плашки; nil — без кромки. */
+    let rim: Rim?
+
+    /* Рамка SwiftUI-иконки по видимой плашке, а не по pointSize фона. Тогда край плашки ложится на пиксель,
+     а соседи в строке отсчитывают отступ от плашки, как в Настройках. */
+    let framesPlate: Bool
+
+    /* Glyph-поправки, которые на этой платформе отличаются от общих (SettingsIconGlyph). */
+    let glyphScales: [String: CGFloat]
+
+    init(
+        shape: SettingsIconShape,
+        standardPoints: CGFloat,
+        glyphRatio: CGFloat,
+        usesLightColor: Bool,
+        shadow: Shadow,
+        background: SettingsIconBackground?,
+        plateShadow: Shadow = .none,
+        rim: Rim? = nil,
+        framesPlate: Bool = false,
+        glyphScales: [String: CGFloat] = [:]
+    ) {
+        self.shape = shape
+        self.standardPoints = standardPoints
+        self.glyphRatio = glyphRatio
+        self.usesLightColor = usesLightColor
+        self.shadow = shadow
+        self.background = background
+        self.plateShadow = plateShadow
+        self.rim = rim
+        self.framesPlate = framesPlate
+        self.glyphScales = glyphScales
+    }
+
+    /* Множитель pointSize глифа: поправка платформы, иначе общая. */
+    func glyphScale(for systemName: String) -> CGFloat {
+        glyphScales[systemName] ?? SettingsIconGlyph.scale(for: systemName)
+    }
+
     struct Shadow: Equatable, Sendable {
 
         /* Прозрачность чёрного. */
@@ -36,6 +78,17 @@ struct SettingsIconMetrics: Sendable {
         let radius: CGFloat
 
         static let none = Shadow(opacity: 0, offset: 0, radius: 0)
+    }
+
+    /* Кромка: белая полоска толщиной `width` pt вдоль верхнего и нижнего края формы. Её толщина сходит
+     на нет к бокам сама: полоска — это форма минус та же форма, сдвинутая на `width`. */
+    struct Rim: Equatable, Sendable {
+
+        let width: CGFloat
+
+        /* Сколько белого прибавить сверху и снизу (plusLighter, доля 255 на канал). */
+        let topOpacity: CGFloat
+        let bottomOpacity: CGFloat
     }
 
     /* Метрики платформы, на которой собрана библиотека. */
